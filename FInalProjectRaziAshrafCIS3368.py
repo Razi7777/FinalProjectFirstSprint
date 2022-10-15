@@ -34,4 +34,57 @@ app.config['DEBUG'] = True #allow to show errors in browser
 
 mylist = [] #creating an empty list for the post api 
 
+@app.route('/api/watches/get' , methods=['GET'])#api to get all watches, got help from https://webdamn.com/create-restful-api-using-python-mysql/, edited to fit criteria for exam 1, using https://www.w3schools.com/mysql/mysql_orderby.asp, same base method as homework 2 with minor alterations
+def get_watches():
+    try:
+        cursor.execute("SELECT id, make, model, type, purchaseprice, saleprice FROM watches ORDER BY (saleprice - purchaseprice) DESC")   #filters by profit (salesprice - purchaseprice), leaves salesprice null values last  
+        watchRows = cursor.fetchall()
+        response = jsonify(watchRows)
+        return response
+    except Exception as e:
+        print(e)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.run()
