@@ -32,7 +32,6 @@ app = flask.Flask(__name__)#Setting up application name
 app.config['DEBUG'] = True #allow to show errors in browser
 
 
-mylist = [] #creating an empty list for the post api 
 
 @app.route('/api/airports/get' , methods=['GET'])#api to get all airports, got help from https://webdamn.com/create-restful-api-using-python-mysql/
 def get_airports():
@@ -70,7 +69,43 @@ def get_flights():
 
 
 
+@app.route('/api/planes/post', methods=['POST'])  #creating a post api from the information shared in class, similar to homework 2 and exam 1
+def create_plane():
+    mylist = []
+    request_data = request.get_json()
+    newmake = request_data['make']
+    newmodel = request_data['model']
+    newyear = request_data['year']
+    newcapacity= request_data['capacity']
+    planes = [newmake, newmodel, newyear, newcapacity]
+    mylist.append(planes)
+    for plane in mylist:
+        sql = "INSERT INTO planes (make, model, year, capacity) VALUES (%s, %s, %s, %s)" 
+        val = (planes[0], planes[1], planes[2], planes[3])
+        cursor.execute(sql,val)
+        conn.commit()
+    mylist.clear()
+    return ("Add request successful")
 
+
+
+
+@app.route('/api/airports/post', methods=['POST'])  #creating a post api from the information shared in class, similar to homework 2 and exam 1
+def create_airport():
+    mylist = []
+    request_data = request.get_json()
+    newcode = request_data['airportcode']
+    newname = request_data['airportname']
+    newcountry = request_data['country']
+    airports = [newcode, newname, newcountry]
+    mylist.append(airports)
+    for airport in mylist:
+        sql = "INSERT INTO airports (airportcode, airportname, country) VALUES (%s, %s, %s)" 
+        val = (airports[0], airports[1], airports[2])
+        cursor.execute(sql,val)
+        conn.commit()
+    mylist.clear()
+    return ("Add request successful")
 
 
 
