@@ -32,6 +32,34 @@ app = flask.Flask(__name__)#Setting up application name
 app.config['DEBUG'] = True #allow to show errors in browser
 
 
+#the username and password for our login
+authorized_user = [
+{
+        'username': 'myusername',
+        'password': 'mypassword',
+        'role': 'default',
+
+}
+]
+
+#login api, used the example from class 6
+@app.route('/api/usernamepw', methods=['GET'])
+def usernamepw_example():
+    username = request.headers['username'] 
+    pw = request.headers['password']
+    for au in authorized_user: 
+        if au['username'] == username and au['password'] == pw: 
+            return jsonify('You are authorized.')
+        else:
+            return 'SECURITY ERROR' 
+
+
+
+
+
+
+
+
 
 @app.route('/api/airports/get' , methods=['GET'])#api to get all airports, got help from https://webdamn.com/create-restful-api-using-python-mysql/
 def get_airports():
@@ -69,7 +97,7 @@ def get_flights():
 
 
 
-@app.route('/api/planes/post', methods=['POST'])  #creating a post api from the information shared in class, similar to homework 2 and exam 1
+@app.route('/api/planes/post', methods=['POST'])  #creating a post api for planes from the information shared in class, similar to homework 2 and exam 1
 def create_plane():
     mylist = []
     request_data = request.get_json()
@@ -85,12 +113,12 @@ def create_plane():
         cursor.execute(sql,val)
         conn.commit()
     mylist.clear()
-    return ("Add request successful")
+    return ("Plane add request successful")
 
 
 
 
-@app.route('/api/airports/post', methods=['POST'])  #creating a post api from the information shared in class, similar to homework 2 and exam 1
+@app.route('/api/airports/post', methods=['POST'])  #creating a post api for airports from the information shared in class, similar to homework 2 and exam 1
 def create_airport():
     mylist = []
     request_data = request.get_json()
@@ -105,8 +133,26 @@ def create_airport():
         cursor.execute(sql,val)
         conn.commit()
     mylist.clear()
-    return ("Add request successful")
+    return ("Airport add request successful")
 
+
+@app.route('/api/flights/post', methods=['POST'])  #creating a post api for flights from the information shared in class, similar to homework 2 and exam 1
+def create_flight():
+    mylist = []
+    request_data = request.get_json()
+    newplaneid = request_data['planeid']
+    newairportfromid = request_data['airportfromid']
+    newairporttoid = request_data['airporttoid']
+    newdate = request_data['date']
+    flights = [newplaneid, newairportfromid, newairporttoid, newdate]
+    mylist.append(flights)
+    for airport in mylist:
+        sql = "INSERT INTO flights (planeid, airportfromid, airporttoid, date) VALUES (%s, %s, %s, %s)" 
+        val = (flights[0], flights[1], flights[2], flights[3])
+        cursor.execute(sql,val)
+        conn.commit()
+    mylist.clear()
+    return ("FLight add request successful")
 
 
 
