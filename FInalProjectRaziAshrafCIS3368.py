@@ -57,7 +57,7 @@ def usernamepw_example():
 
 
 
-
+#get api section
 
 
 
@@ -94,7 +94,7 @@ def get_flights():
         print(e)
 
 
-
+#post api section
 
 
 @app.route('/api/planes/post', methods=['POST'])  #creating a post api for planes from the information shared in class, similar to homework 2 and exam 1
@@ -152,14 +152,58 @@ def create_flight():
         cursor.execute(sql,val)
         conn.commit()
     mylist.clear()
-    return ("FLight add request successful")
+    return ("Flight add request successful")
 
 
 
 
+#delete api section
+
+#Delete api, got help from https://webdamn.com/create-restful-api-using-python-mysql/
+@app.route('/api/planes/delete', methods=['DELETE'])
+def delete_plane():
+    request_data = request.get_json()
+    newid = request_data['id']
+    cursor.execute("SELECT id, make, model, year, capacity FROM planes")
+    planeRows = cursor.fetchall()
+    for planeRow in planeRows:
+        if planeRow['id'] == newid:
+            sql = "DELETE FROM planes WHERE id = %s"
+            val = [newid]
+            cursor.execute(sql, val)
+            conn.commit()
+            return ("Plane deleted successfully!")
 
 
 
+@app.route('/api/airports/delete', methods=['DELETE'])
+def delete_airport():
+    request_data = request.get_json()
+    newid = request_data['id']
+    cursor.execute("SELECT id, airportcode, airportname, country FROM airports")
+    airportRows = cursor.fetchall()
+    for airportRow in airportRows:
+        if airportRow['id'] == newid:
+            sql = "DELETE FROM airports WHERE id = %s"
+            val = [newid]
+            cursor.execute(sql, val)
+            conn.commit()
+            return ("Airport deleted successfully!")
+
+
+@app.route('/api/flights/delete', methods=['DELETE'])
+def delete_flight():
+    request_data = request.get_json()
+    newid = request_data['id']
+    cursor.execute("SELECT id, planeid, airportfromid, airporttoid, date FROM flights")
+    flightRows = cursor.fetchall()
+    for flightRow in flightRows:
+        if flightRow['id'] == newid:
+            sql = "DELETE FROM flights WHERE id = %s"
+            val = [newid]
+            cursor.execute(sql, val)
+            conn.commit()
+            return ("Flight deleted successfully!")
 
 
 
