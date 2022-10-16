@@ -208,8 +208,53 @@ def delete_flight():
 
 
 
+#put api section
 
+@app.route('/api/planes/put', methods=['PUT'])  #creating a put api from the information shared in class
+def update_plane():
+    if 'id' in request.args:
+        newid = int(request.args['id'])
+    else:
+        return ('ERROR: No ID provided!')
+    request_data = request.get_json()
+    newmake = request_data['make']
+    newmodel = request_data['model']
+    newyear = request_data['year']
+    newcapacity = request_data['capacity']
 
+    plane = [newid, newmake, newmodel, newyear, newcapacity]
+    jsonify(plane)
+    cursor.execute("SELECT id, make, model, year, capacity FROM planes")
+    planeRows = cursor.fetchall()
+    for planeRow in planeRows:
+        if planeRow['id'] == newid:
+            sql = "UPDATE planes SET make=%s, model=%s, year=%s, capacity=%s WHERE id= %s"
+            val = (plane[1], plane[2], plane[3], plane[4], newid)
+            cursor.execute(sql,val)
+            conn.commit()
+            return ("Plane update successful")
+
+@app.route('/api/airports/put', methods=['PUT'])  
+def update_airport():
+    if 'id' in request.args:
+        newid = int(request.args['id'])
+    else:
+        return ('ERROR: No ID provided!')
+    request_data = request.get_json()
+    newcode = request_data['airportcode']
+    newname = request_data['airportname']
+    newcountry = request_data['country']
+    airport = [newid, newcode, newname, newcountry]
+    jsonify(airport)
+    cursor.execute("SELECT id, airportcode, airportname, country FROM airports")
+    airportRows = cursor.fetchall()
+    for airportRow in airportRows:
+        if airportRow['id'] == newid:
+            sql = "UPDATE airports SET airportcode=%s, airportname=%s, country=%s WHERE id= %s"
+            val = (airport[1], airport[2], airport[3], newid)
+            cursor.execute(sql,val)
+            conn.commit()
+            return ("Airport update successful")
 
 
 
